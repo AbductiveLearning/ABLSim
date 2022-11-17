@@ -4,7 +4,7 @@ from sklearn import preprocessing
 import itertools
 from tqdm import tqdm
 import time
-from zoopt import ValueType, Dimension2, Objective, Parameter, Opt
+# from zoopt import ValueType, Dimension2, Objective, Parameter, Opt
 import cupy as cp 
 
 def sum2score(out_class_sum_list, out_class_cnt_list, inner_class_sum_list, inner_class_cnt_list):
@@ -116,55 +116,55 @@ def list_split(list1, abduced_list):
         cur += len(abduced_list[i][0])
     return ret
 
-def build_zoopt_dim(abduced_iterables):
-    dim_list = []
-    for it in abduced_iterables:
-        dim_list.append((ValueType.DISCRETE, [0, len(it)-1], False))
-    dim = Dimension2(dim_list)
-    return dim
+# def build_zoopt_dim(abduced_iterables):
+#     dim_list = []
+#     for it in abduced_iterables:
+#         dim_list.append((ValueType.DISCRETE, [0, len(it)-1], False))
+#     dim = Dimension2(dim_list)
+#     return dim
 
-def score_label_zoopt(sol):
-    idxs = sol.get_x()
-    label = np.array(abduced_iterables_global)[np.arange(len(abduced_iterables_global)), idxs]
-    label = np.concatenate((labeled_y_global, label.flatten()))
-    label = np.array([label], dtype=np.int32)
-    if similar_coef_global > 0:
-        score_similarity_org_list, _, _, _, _ = score_label_similarity(label, pair_distance_global)
-        score_similarity_org_list = score_similarity_org_list.get() # TO CPU
-        score_similarity_list = preprocessing.scale(score_similarity_org_list) #TODO
-    if similar_coef_global < 1:
-        score_prob_org_list = score_label_prob(label, prob_val_global)
-        score_prob_list = preprocessing.scale(score_prob_org_list) #TODO
-    if similar_coef_global == 0:
-        score_list = score_prob_list
-    elif similar_coef_global == 1:
-        score_list = score_similarity_list
-    else:
-        score_list = similar_coef_global * score_similarity_list + (1 - similar_coef_global) * score_prob_list
-    score = -score_list[0]
-    return -score
+# def score_label_zoopt(sol):
+#     idxs = sol.get_x()
+#     label = np.array(abduced_iterables_global)[np.arange(len(abduced_iterables_global)), idxs]
+#     label = np.concatenate((labeled_y_global, label.flatten()))
+#     label = np.array([label], dtype=np.int32)
+#     if similar_coef_global > 0:
+#         score_similarity_org_list, _, _, _, _ = score_label_similarity(label, pair_distance_global)
+#         score_similarity_org_list = score_similarity_org_list.get() # TO CPU
+#         score_similarity_list = preprocessing.scale(score_similarity_org_list) #TODO
+#     if similar_coef_global < 1:
+#         score_prob_org_list = score_label_prob(label, prob_val_global)
+#         score_prob_list = preprocessing.scale(score_prob_org_list) #TODO
+#     if similar_coef_global == 0:
+#         score_list = score_prob_list
+#     elif similar_coef_global == 1:
+#         score_list = score_similarity_list
+#     else:
+#         score_list = similar_coef_global * score_similarity_list + (1 - similar_coef_global) * score_prob_list
+#     score = -score_list[0]
+#     return -score
 
-def select_abduced_result_zoopt(abduced_batch_list, pair_distance, prob_val, abduced_iterables, labeled_y, ground_label = None, similar_coef = 1):
-    global abduced_iterables_global
-    global pair_distance_global
-    global prob_val_global
-    global similar_coef_global
-    global labeled_y_global
-    abduced_iterables_global, pair_distance_global, prob_val_global, similar_coef_global, labeled_y_global = abduced_iterables, pair_distance, prob_val, similar_coef, labeled_y
-    dim = build_zoopt_dim(abduced_iterables)
-    obj = Objective(score_label_zoopt, dim)
-    solution = Opt.min(obj, Parameter(budget=10000, parallel=False, server_num=2))
-    print(solution.get_x(), solution.get_value())
+# def select_abduced_result_zoopt(abduced_batch_list, pair_distance, prob_val, abduced_iterables, labeled_y, ground_label = None, similar_coef = 1):
+#     global abduced_iterables_global
+#     global pair_distance_global
+#     global prob_val_global
+#     global similar_coef_global
+#     global labeled_y_global
+#     abduced_iterables_global, pair_distance_global, prob_val_global, similar_coef_global, labeled_y_global = abduced_iterables, pair_distance, prob_val, similar_coef, labeled_y
+#     dim = build_zoopt_dim(abduced_iterables)
+#     obj = Objective(score_label_zoopt, dim)
+#     solution = Opt.min(obj, Parameter(budget=10000, parallel=False, server_num=2))
+#     print(solution.get_x(), solution.get_value())
 
-    idxs, score = solution.get_x(), -solution.get_value()
-    best_label = np.array(abduced_iterables)[np.arange(len(abduced_iterables_global)), idxs]
-    best_label = np.concatenate((labeled_y, best_label.flatten()))
-    best_label = np.array([best_label], dtype=np.int32)
-    print('best   score', score, score_label_similarity(best_label, pair_distance)[0][0], score_label_prob(best_label, prob_val)[0], best_label)
-    ground_all = np.array([labeled_y + ground_label])
-    print('ground score', similar_coef*score_label_similarity(ground_all, pair_distance)[0][0]+(1-similar_coef)*score_label_prob(ground_all, prob_val)[0], score_label_similarity(ground_all, pair_distance)[0][0], score_label_prob(ground_all, prob_val)[0], ground_label)
-    input()
-    return best_label
+#     idxs, score = solution.get_x(), -solution.get_value()
+#     best_label = np.array(abduced_iterables)[np.arange(len(abduced_iterables_global)), idxs]
+#     best_label = np.concatenate((labeled_y, best_label.flatten()))
+#     best_label = np.array([best_label], dtype=np.int32)
+#     print('best   score', score, score_label_similarity(best_label, pair_distance)[0][0], score_label_prob(best_label, prob_val)[0], best_label)
+#     ground_all = np.array([labeled_y + ground_label])
+#     print('ground score', similar_coef*score_label_similarity(ground_all, pair_distance)[0][0]+(1-similar_coef)*score_label_prob(ground_all, prob_val)[0], score_label_similarity(ground_all, pair_distance)[0][0], score_label_prob(ground_all, prob_val)[0], ground_label)
+#     input()
+#     return best_label
 
 def select_abduced_result(pair_distance, prob_val, abduced_result, labeled_y, ground_label = None, beam_width = None, similar_coef = 1, inner_sum_old = None, inner_cnt_old = None, outer_sum_old = None, outer_cnt_old = None):
     '''
