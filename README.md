@@ -14,7 +14,7 @@ This code is only tested in Linux environment.
 - scikit-learn
 - opencv-python
 
-To create the above environment with Anaconda, you can run the following command (cudatoolkit=10.1 for old GPUs, cudatoolkit=11.3 for new GPUs / new drivers):
+To create the above environment with [Anaconda](https://www.anaconda.com/products/distribution), you can run the following command (cudatoolkit=10.1 for old GPUs, cudatoolkit=11.3 for new GPUs / new drivers):
 
  (cudatoolkit=10.1)
 
