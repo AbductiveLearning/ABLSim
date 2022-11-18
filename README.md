@@ -24,7 +24,6 @@ conda activate ablsim
 conda install -c conda-forge cupy cudatoolkit=10.1 -y
 conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=10.1 -c pytorch -y
 pip install tqdm opencv-python scikit-learn matplotlib
-python main_1_2.py --dataset 2ADD --images CIFAR
 ```
 
  (cudatoolkit=11.3)
@@ -35,7 +34,6 @@ conda activate ablsim
 conda install -c conda-forge cupy cudatoolkit=11.3 -y
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch -y
 pip install tqdm opencv-python scikit-learn matplotlib
-python main_1_2.py --dataset 2ADD --images CIFAR
 ```
 
 ## Running Code
