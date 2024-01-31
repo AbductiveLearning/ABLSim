@@ -1,3 +1,5 @@
+🌟 **New!** [ABLkit](https://github.com/AbductiveLearning/ABLkit) released: A toolkit for Abductive Learning with high flexibility, user-friendly interface, and optimized performance. Welcome to try it out!🚀
+
 # Fast Abductive Learning by Similarity-based Consistency Optimization
 
 This is the repository for holding the sample code of _[Fast Abductive Learning by Similarity-based Consistency Optimization](https://proceedings.neurips.cc/paper/2021/file/df7e148cabfd9b608090fa5ee3348bfe-Paper.pdf)_ in NeurIPS 2021.
